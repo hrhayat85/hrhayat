@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HR.HAYAT — Admin Portal</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+  <main class="login-wrapper">
+    <div class="login-card">
+      <header class="login-header">
+        <span class="brand-badge">⚡ Admin Portal</span>
+        <h1 class="login-title">HR.HAYAT</h1>
+        <p class="login-subtitle">Sign in with authorized administrator credentials</p>
+      </header>
+
+      <!-- Configuration notice (visible if placeholders are detected) -->
+      <aside id="configNotice" class="config-notice" role="alert" aria-live="polite">
+        <strong>⚠️ Setup Required</strong>
+        Firebase API keys have not been configured yet. Open <code>js/firebase-config.js</code> and replace the placeholder values with your Firebase project credentials.
+      </aside>
+
+      <!-- Error message banner -->
+      <div id="errorBanner" class="error-banner" role="alert" aria-live="assertive">
+        <span class="error-icon" aria-hidden="true">⚠️</span>
+        <span id="errorMessage">Invalid email or password</span>
+      </div>
+
+      <form id="loginForm" action="javascript:void(0);" method="POST" autocomplete="on" novalidate>
+        <div class="form-group">
+          <label for="adminEmail" class="form-label">Admin Email</label>
+          <div class="input-wrapper">
+            <input 
+              type="email" 
+              id="adminEmail" 
+              name="email" 
+              class="form-input" 
+              placeholder="admin@hrhayat.com" 
+              required 
+              autocomplete="email"
+              autofocus
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="adminPassword" class="form-label">Password</label>
+          <div class="input-wrapper">
+            <input 
+              type="password" 
+              id="adminPassword" 
+              name="password" 
+              class="form-input" 
+              placeholder="••••••••••••" 
+              required 
+              autocomplete="current-password"
+            >
+          </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-login">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="btn-text">Authenticate & Sign In</span>
+        </button>
+      </form>
+
+      <footer class="login-footer">
+        <a href="index.html" class="back-link">← Public Portfolio</a>
+        <span class="security-badge">🔒 Firebase Auth</span>
+      </footer>
+    </div>
+  </main>
+
+  <script type="module">
+    import { isFirebaseConfigured, auth } from './js/firebase-config.js';
+    import { loginAdmin, onAuthChange } from './js/auth.js';
+
+    const configNotice = document.getElementById('configNotice');
+    const errorBanner = document.getElementById('errorBanner');
+    const errorMessage = document.getElementById('errorMessage');
+    const loginForm = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const emailInput = document.getElementById('adminEmail');
+    const passwordInput = document.getElementById('adminPassword');
+
+    // Auto-fill from URL parameters if provided (e.g. from bookmark or query string)
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('email')) {
+        emailInput.value = urlParams.get('email');
+      }
+      if (urlParams.get('password')) {
+        passwordInput.value = urlParams.get('password');
+      }
+    } catch (err) {
+      console.warn('URLSearchParams error:', err);
+    }
+
+    // Check configuration status
+    if (!isFirebaseConfigured()) {
+      configNotice.classList.add('visible');
+    }
+
+    // Auto-redirect if already logged in as authorized admin
+    onAuthChange((user, isAdmin) => {
+      if (user && isAdmin) {
+        window.location.replace('admin.html');
+      }
+    });
+
+    function showError(msg) {
+      errorMessage.textContent = msg;
+      errorBanner.classList.add('visible');
+    }
+
+    function clearError() {
+      errorBanner.classList.remove('visible');
+      errorMessage.textContent = '';
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearError();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showError('Please enter both email and password.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
+
+      try {
+        const result = await loginAdmin(email, password);
+        if (result.success) {
+          window.location.replace('admin.html');
+        } else {
+          showError(result.error || 'Authentication failed. Please verify your credentials.');
+        }
+      } catch (err) {
+        console.error('[Login Error]:', err);
+        showError(err.message || 'An unexpected error occurred.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
+      }
+    });
+  </script>
+</body>
+</html>

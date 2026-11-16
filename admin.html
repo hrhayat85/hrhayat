@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HR.HAYAT — Admin Control Center</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- AUTH GUARD LOADING OVERLAY -->
+  <div id="authLoadingOverlay">
+    <div class="spinner-lg"></div>
+    <div style="font-weight: 800; font-size: 1.1rem; letter-spacing: 0.5px;">Verifying Admin Authorization...</div>
+  </div>
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="admin.html" class="brand-link">
+        <span class="brand-title">HR.HAYAT</span>
+        <span class="brand-badge">Admin Panel</span>
+      </a>
+      <button class="sidebar-toggle" id="sidebarCloseBtn" aria-label="Close Sidebar">✕</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-tab="overview">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </button>
+
+      <button class="nav-item" data-tab="profile">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+      </button>
+
+      <button class="nav-item" data-tab="about">
+        <span class="nav-icon">📝</span>
+        <span>About Me</span>
+      </button>
+
+      <button class="nav-item" data-tab="skills">
+        <span class="nav-icon">⚡</span>
+        <span>Skills</span>
+        <span class="nav-counter" id="skillsCountBadge">0</span>
+      </button>
+
+      <button class="nav-item" data-tab="gallery">
+        <span class="nav-icon">🖼️</span>
+        <span>Gallery</span>
+        <span class="nav-counter" id="galleryCountBadge">0</span>
+      </button>
+
+      <button class="nav-item" data-tab="projects">
+        <span class="nav-icon">💼</span>
+        <span>Projects</span>
+        <span class="nav-counter" id="projectsCountBadge">0</span>
+      </button>
+
+      <button class="nav-item" data-tab="social">
+        <span class="nav-icon">🌐</span>
+        <span>Social Media</span>
+        <span class="nav-counter" id="socialCountBadge">0</span>
+      </button>
+
+      <button class="nav-item" data-tab="contact">
+        <span class="nav-icon">📬</span>
+        <span>Contact</span>
+      </button>
+
+      <button class="nav-item" data-tab="settings">
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" target="_blank" rel="noopener noreferrer" class="btn-sidebar btn-view-site">
+        <span>👁️ View Live Website</span>
+      </a>
+      <button id="logoutBtn" class="btn-sidebar btn-logout">
+        <span>🚪 Sign Out</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN VIEWPORT -->
+  <main class="admin-main">
+    <!-- TOPBAR -->
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebarOpenBtn" aria-label="Open Navigation">☰</button>
+        <h1 class="page-title" id="pageTitle">Dashboard Overview</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="admin-badge">
+          <span class="admin-badge-dot"></span>
+          <span id="adminEmailDisplay">admin@firebase</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-content-body">
+
+      <!-- ========================================================
+           TAB 1: DASHBOARD OVERVIEW
+           ======================================================== -->
+      <section class="tab-pane active" id="tab-overview">
+        <div class="stats-grid">
+          <div class="stat-card pink">
+            <div class="stat-icon">💼</div>
+            <div class="stat-info">
+              <span class="stat-value" id="statProjects">0</span>
+              <span class="stat-label">Total Projects</span>
+            </div>
+          </div>
+
+          <div class="stat-card blue">
+            <div class="stat-icon">🖼️</div>
+            <div class="stat-info">
+              <span class="stat-value" id="statGallery">0</span>
+              <span class="stat-label">Gallery Photos</span>
+            </div>
+          </div>
+
+          <div class="stat-card orange">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-info">
+              <span class="stat-value" id="statSkills">0</span>
+              <span class="stat-label">Skills Listed</span>
+            </div>
+          </div>
+
+          <div class="stat-card green">
+            <div class="stat-icon">🌐</div>
+            <div class="stat-info">
+              <span class="stat-value" id="statSocial">0</span>
+              <span class="stat-label">Active Socials</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions & Setup Guide -->
+        <div class="neo-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">🚀 Quick Actions & Data Seeding</h2>
+              <p class="card-subtitle">Manage your portfolio content or initialize clean defaults</p>
+            </div>
+          </div>
+
+          <div class="quick-actions-bar">
+            <button class="btn btn-primary" onclick="window.adminApp.switchTab('projects')">➕ Add Project</button>
+            <button class="btn btn-pink" onclick="window.adminApp.switchTab('gallery')">📸 Upload Photos</button>
+            <button class="btn btn-orange" onclick="window.adminApp.switchTab('skills')">⚡ Add Skill</button>
+            <button class="btn btn-light" id="seedDefaultsBtn">🌱 Seed Initial HR.HAYAT Profile</button>
+          </div>
+
+          <div style="background:#FFF9E6; border:2px solid #000; border-radius:8px; padding:16px; margin-top:14px; font-size:0.88rem; line-height:1.5;">
+            <strong>💡 Pro-Tip:</strong> All changes made here synchronize in real-time with your live portfolio website! When you upload photos or projects, the public site updates instantly without requiring a page refresh.
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           TAB 2: PROFILE MANAGEMENT
+           ======================================================== -->
+      <section class="tab-pane" id="tab-profile">
+        <div class="neo-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">👤 Profile Management</h2>
+              <p class="card-subtitle">Update your personal brand identity, avatar, and introduction</p>
+            </div>
+          </div>
+
+          <form id="profileForm">
+            <!-- Avatar Upload & Live Preview -->
+            <div class="avatar-upload-box">
+              <img id="avatarPreview" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23eee'/><text x='50' y='55' text-anchor='middle' font-size='28' fill='%23999'>👤</text></svg>" alt="Profile Preview" class="avatar-preview">
+              <div style="flex: 1;">
+                <label class="form-label" for="profileImageInput">Option 1: Upload Profile Picture File</label>
+                <input type="file" id="profileImageInput" accept="image/*" class="form-input" style="padding: 6px;">
+                <p class="form-help">Upload image file directly to Firebase Storage (JPG, PNG, WebP up to 5MB).</p>
+
+                <label class="form-label" for="profileImageUrlInput" style="margin-top: 12px;">Option 2: OR Paste Photo Direct Link (URL)</label>
+                <input type="url" id="profileImageUrlInput" class="form-input" placeholder="https://images.unsplash.com/... or any photo URL">
+                <p class="form-help">Paste any online photo link without needing to upload a file.</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="profileName">Full Name / Brand Title</label>
+                <input type="text" id="profileName" class="form-input" placeholder="HR.HAYAT" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="profileTagline">Subtitle / Tagline</label>
+                <input type="text" id="profileTagline" class="form-input" placeholder="CREATIVE DEVELOPER & DESIGNER">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profileIntro">Hero Introduction</label>
+              <textarea id="profileIntro" class="form-textarea" placeholder="Brief introduction text displayed prominently in the hero section..."></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="profileLocation">Location</label>
+                <input type="text" id="profileLocation" class="form-input" placeholder="Bangladesh">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="profileEmail">Public Email</label>
+                <input type="email" id="profileEmail" class="form-input" placeholder="contact@hrhayat.com">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="profilePhone">Phone / WhatsApp</label>
+                <input type="text" id="profilePhone" class="form-input" placeholder="+880 1XXXXXXXXX">
+              </div>
+            </div>
+
+            <button type="submit" id="saveProfileBtn" class="btn btn-primary">
+              💾 Save Profile Changes
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           TAB 3: ABOUT ME MANAGEMENT
+           ======================================================== -->
+      <section class="tab-pane" id="tab-about">
+        <div class="neo-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">📝 About Me Management</h2>
+              <p class="card-subtitle">Tell your story, background, and passions in multiple structured paragraphs</p>
+            </div>
+          </div>
+
+          <form id="aboutForm">
+            <div class="form-group">
+              <label class="form-label" for="aboutTitle">Section Title</label>
+              <input type="text" id="aboutTitle" class="form-input" placeholder="About Me" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="aboutDescription">Short Summary / Catchphrase</label>
+              <input type="text" id="aboutDescription" class="form-input" placeholder="A passionate builder crafting modern digital experiences.">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="aboutParagraphs">About Paragraphs (Separate each paragraph with an empty line)</label>
+              <textarea id="aboutParagraphs" class="form-textarea" style="min-height: 220px;" placeholder="Paragraph 1...&#10;&#10;Paragraph 2...&#10;&#10;Paragraph 3..."></textarea>
+              <p class="form-help">Enter multiple paragraphs separated by a double newline. Each will render as a neat paragraph block on the public site.</p>
+            </div>
+
+            <button type="submit" id="saveAboutBtn" class="btn btn-primary">
+              💾 Save About Me Content
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           TAB 4: SKILLS MANAGEMENT
+           ======================================================== -->
+      <section class="tab-pane" id="tab-skills">
+        <!-- Add Skill Form -->
+        <div class="neo-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">⚡ Add New Skill</h2>
+              <p class="card-subtitle">Add technical, creative, or specialized capabilities (no fake percentages)</p>
+            </div>
+          </div>
+
+          <form id="addSkillForm">
+            <input type="hidden" id="editSkillId" value="">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="skillName">Skill Name</label>
+                <input type="text" id="skillName" class="form-input" placeholder="JavaScript / UI Design / HTML5" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="skillCategory">Category</label>
+                <input type="text" id="skillCategory" class="form-input" placeholder="Development, Design, or Tools">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="skillIcon">Icon or Emoji</label>
+                <input type="text" id="skillIcon" class="form-input" placeholder="⚡, 💻, 🎨, or code icon">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="skillOrder">Sort Order</label>
+                <input type="number" id="skillOrder" class="form-input" value="1" min="1">
+              </div>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+              <button type="submit" id="saveSkillBtn" class="btn btn-orange">➕ Add Skill</button>
+              <button type="button" id="cancelEditSkillBtn" class="btn btn-light" style="display:none;">Cancel Edit</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Skills List -->
+        <div class="neo-card">
+          <div class="card-header">
+            <h2 class="card-title">📋 Current Skills (<span id="skillsListCount">0</span>)</h2>
+          </div>
+          <div id="skillsListContainer" class="items-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           TAB 5: GALLERY MANAGEMENT
+           ======================================================== -->
+      <section class="tab-pane" id="tab-gallery">
+        <!-- 1. ADD VIA DIRECT LINK (URL) -->
+        <div class="neo-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">🔗 Add Photo via Direct Image Link (URL)</h2>
+              <p class="card-subtitle">Paste any direct online image URL (No upload needed! Instant & Free)</p>
+            </div>
+          </div>
+
+          <form id="galleryUrlForm">
+            <div class="form-group">
+              <label class="form-label" for="galleryDirectUrlInput">Image Direct URL</label>
+              <input type="url" id="galleryDirectUrlInput" class="form-input" placeholder="https://images.unsplash.com/photo-... or any .jpg / .png link" required>
+              <p class="form-help">Enter any direct image link from Unsplash, Imgur, Cloudinary, etc.</p>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="galleryDirectTitle">Photo Title / Caption</label>
+                <input type="text" id="galleryDirectTitle" class="form-input" placeholder="e.g. Workspace Setup">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="galleryDirectCategory">Category Tag</label>
+                <input type="text" id="galleryDirectCategory" class="form-input" placeholder="e.g. Workspace, Creative, Nature">
+              </div>
+            </div>
+
+            <!-- Live URL Preview -->
+            <div id="galleryUrlPreviewBox" style="display:none; margin-bottom:16px; border:2px solid #000; border-radius:8px; overflow:hidden; max-width:320px; box-shadow:3px 3px 0 #000;">
+              <img id="galleryUrlPreviewImg" src="" alt="Preview" style="width:100%; height:180px; object-fit:cover; display:block;">
+            </div>
+
+            <button type="submit" id="addGalleryByUrlBtn" class="btn btn-primary">
+              🔗 Add Photo to Gallery
+            </button>
+          </form>
+        </div>
+
+        <!-- 2. UPLOAD IMAGE FILES TO STORAGE -->
+        <div class="neo-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">📁 OR Upload Photo Files</h2>
+              <p class="card-subtitle">Upload multiple image files from your computer to Firebase Storage</p>
+            </div>
+          </div>
+
+          <!-- Drag and drop zone -->
+          <div class="dropzone" id="galleryDropzone">
+            <div class="dropzone-icon">📁</div>
+            <div class="dropzone-text">Click or drag images here to upload</div>
+            <div class="dropzone-hint">Supports JPG, PNG, WebP up to 5MB each</div>
+            <input type="file" id="galleryFileInput" accept="image/*" multiple style="display: none;">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="galleryImageTitle">Image Title / Caption</label>
+              <input type="text" id="galleryImageTitle" class="form-input" placeholder="e.g. Workspace Setup / Design Sprint">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="galleryImageCategory">Category Tag</label>
+              <input type="text" id="galleryImageCategory" class="form-input" placeholder="e.g. Workspace, Photography, UI">
+            </div>
+          </div>
+
+          <!-- Upload Progress Bar -->
+          <div id="galleryUploadProgress" class="progress-container">
+            <div id="galleryProgressBar" class="progress-bar"></div>
+            <div id="galleryProgressText" class="progress-text">Uploading: 0%</div>
+          </div>
+
+          <button type="button" id="startUploadGalleryBtn" class="btn btn-pink" disabled>
+            🚀 Start File Upload
+          </button>
+        </div>
+
+        <!-- Gallery Photos Grid -->
+        <div class="neo-card">
+          <div class="card-header">
+            <h2 class="card-title">📸 Active Gallery Photos (<span id="galleryListCount">0</span>)</h2>
+          </div>
+          <div id="galleryGridContainer" class="items-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           TAB 6: PROJECT MANAGEMENT
+           ======================================================== -->
+      <section class="tab-pane" id="tab-projects">
+        <!-- Add/Edit Project Form -->
+        <div class="neo-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="projectFormTitle">💼 Add New Project</h2>
+              <p class="card-subtitle">Showcase your portfolio projects with live links and GitHub repositories</p>
+            </div>
+          </div>
+
+          <form id="projectForm">
+            <input type="hidden" id="editProjectId" value="">
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="projectTitle">Project Title</label>
+                <input type="text" id="projectTitle" class="form-input" placeholder="e.g. Neo-Brutalist Portfolio" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="projectCategory">Category / Badge</label>
+                <input type="text" id="projectCategory" class="form-input" placeholder="Web Development / UI Design">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="projectOrder">Display Order</label>
+                <input type="number" id="projectOrder" class="form-input" value="1" min="1">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="projectDescription">Project Description</label>
+              <textarea id="projectDescription" class="form-textarea" placeholder="Detailed explanation of the project, features, and technologies used..."></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="projectLiveUrl">Live Demo URL</label>
+                <input type="url" id="projectLiveUrl" class="form-input" placeholder="https://myproject.com">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="projectGithubUrl">GitHub Repository URL</label>
+                <input type="url" id="projectGithubUrl" class="form-input" placeholder="https://github.com/username/project">
+              </div>
+            </div>
+
+            <!-- Thumbnail Upload or Direct Link -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="projectThumbnailUrl">Thumbnail Direct Image Link (URL)</label>
+                <input type="url" id="projectThumbnailUrl" class="form-input" placeholder="https://images.unsplash.com/... or any photo link">
+                <p class="form-help">Option A: Paste any direct image link.</p>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="projectImageFile">OR Upload Thumbnail File</label>
+                <input type="file" id="projectImageFile" accept="image/*" class="form-input" style="padding: 6px;">
+                <p class="form-help">Option B: Upload an image file to Firebase Storage.</p>
+              </div>
+            </div>
+
+            <!-- Upload Progress -->
+            <div id="projectUploadProgress" class="progress-container">
+              <div id="projectProgressBar" class="progress-bar"></div>
+              <div id="projectProgressText" class="progress-text">Saving project...</div>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+              <button type="submit" id="saveProjectBtn" class="btn btn-primary">💾 Save Project</button>
+              <button type="button" id="cancelEditProjectBtn" class="btn btn-light" style="display:none;">Cancel Edit</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="neo-card">
+          <div class="card-header">
+            <h2 class="card-title">📂 Existing Projects (<span id="projectsListCount">0</span>)</h2>
+          </div>
+          <div id="projectsGridContainer" class="items-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           TAB 7: SOCIAL MEDIA MANAGEMENT
+           ======================================================== -->
+      <section class="tab-pane" id="tab-social">
+        <div class="neo-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">🌐 Social Media Management</h2>
+              <p class="card-subtitle">Enable or disable social platforms and customize profile URLs</p>
+            </div>
+          </div>
+
+          <form id="socialForm">
+            <div id="socialInputsList">
+              <!-- Dynamically populated via admin.js for:
+                   Instagram, Facebook, TikTok, X, Pinterest, LinkedIn, YouTube, GitHub, Email -->
+            </div>
+
+            <button type="submit" id="saveSocialBtn" class="btn btn-primary" style="margin-top: 14px;">
+              💾 Save Social Links
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           TAB 8: CONTACT DETAILS
+           ======================================================== -->
+      <section class="tab-pane" id="tab-contact">
+        <div class="neo-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">📬 Contact Information & CTA</h2>
+              <p class="card-subtitle">Configure contact details, working status, and call-to-action button</p>
+            </div>
+          </div>
+
+          <form id="contactForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="contactEmail">Contact Email</label>
+                <input type="email" id="contactEmail" class="form-input" placeholder="contact@hrhayat.com">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="contactPhone">Contact Phone</label>
+                <input type="text" id="contactPhone" class="form-input" placeholder="+880 1XXXXXXXXX">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="contactLocation">Location</label>
+                <input type="text" id="contactLocation" class="form-input" placeholder="Dhaka, Bangladesh">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="contactStatus">Availability Status Badge</label>
+                <input type="text" id="contactStatus" class="form-input" placeholder="🟢 Available for Projects">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="contactCtaText">CTA Button Text</label>
+                <input type="text" id="contactCtaText" class="form-input" placeholder="Get In Touch">
+              </div>
+            </div>
+
+            <button type="submit" id="saveContactBtn" class="btn btn-primary">
+              💾 Save Contact Info
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           TAB 9: SETTINGS
+           ======================================================== -->
+      <section class="tab-pane" id="tab-settings">
+        <div class="neo-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">⚙️ Website Settings & SEO</h2>
+              <p class="card-subtitle">Configure website title, meta tags, and copyright information</p>
+            </div>
+          </div>
+
+          <form id="settingsForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="settingSiteTitle">Website Title</label>
+                <input type="text" id="settingSiteTitle" class="form-input" placeholder="HR.HAYAT | Personal Portfolio">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="settingFavicon">Favicon URL or Emoji</label>
+                <input type="text" id="settingFavicon" class="form-input" placeholder="⚡ or https://...">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="settingMetaDescription">SEO Meta Description</label>
+              <textarea id="settingMetaDescription" class="form-textarea" placeholder="Personal portfolio website of HR.HAYAT, creative developer and designer based in Bangladesh."></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="settingCopyright">Copyright Text</label>
+                <input type="text" id="settingCopyright" class="form-input" placeholder="© 2026 HR.HAYAT. All Rights Reserved.">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="settingThemeColor">Theme Accent Color</label>
+                <input type="text" id="settingThemeColor" class="form-input" placeholder="#FF83C8">
+              </div>
+            </div>
+
+            <button type="submit" id="saveSettingsBtn" class="btn btn-primary">
+              💾 Save Settings
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- CONFIRMATION / EDIT MODAL -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Confirm Action</h3>
+        <button class="modal-close" id="modalCloseBtn">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        Are you sure you want to proceed?
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-light" id="modalCancelBtn">Cancel</button>
+        <button class="btn btn-danger" id="modalConfirmBtn">Confirm Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS CONTAINER -->
+  <div id="toastContainer" aria-live="polite"></div>
+
+  <!-- ADMIN LOGIC SCRIPT -->
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
